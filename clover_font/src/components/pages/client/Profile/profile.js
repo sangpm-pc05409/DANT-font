@@ -5,7 +5,7 @@ const ProfilePage = () => {
   return (
     <Container className="p-0">
       {/* Cover Photo Placeholder */}
-      <div className="bg-secondary" style={{ height: '300px', position: 'relative' }}>
+      <div className="bg-secondary" style={{ height: '270px', position: 'relative' }}>
         <Button 
           variant="light" 
           className="position-absolute bottom-0 end-0 m-3"
