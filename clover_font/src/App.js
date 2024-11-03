@@ -15,6 +15,7 @@ function App() {
   return (
     <Router>
       <div>
+        
         {/* Navbar chỉ hiển thị khi không phải là trang đăng nhập */}
         {window.location.pathname !== "/" && <FacebookNavbar />}
         
