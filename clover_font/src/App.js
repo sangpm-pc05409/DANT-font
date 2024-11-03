@@ -1,37 +1,39 @@
-import logo from './logo.svg';
 import './App.css';
-import Index from './components/pages/client/index'; // Chỉnh sửa chữ cái đầu thành chữ hoa
+import Index from './components/pages/client/index'; // Assuming correct path
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import FacebookNavbar from './components/navbar/client/navbar';
 import Profile from './components/pages/client/Profile/profile';
 import ProductGallery from './components/pages/client/ProductGallery/ProductGallery';
 import Cart from './components/pages/client/Cart/cart';
 import ProductDetail from './components/pages/client/ProductDetail/productDetail';
+import OrderSummary from './components/pages/client/OrderSummary/OrderSummary';
+import Login from './components/pages/client/Login/Login'; // Import the Login component
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-// Giả định UserLayout đã được định nghĩa, nếu không hãy import hoặc định nghĩa nó
-// import UserLayout from './components/layouts/UserLayout'; 
 
 function App() {
   return (
     <Router>
       <div>
-        <FacebookNavbar /> {/* Move the Navbar outside of <Routes> */}
+        {/* Navbar chỉ hiển thị khi không phải là trang đăng nhập */}
+        {window.location.pathname !== "/" && <FacebookNavbar />}
+        
         <div className="content">
           <Routes>
-            <Route path="/" element={<Navigate to="/index" />} />
+            <Route path="/" element={<Login />} />
             <Route path="/index" element={<Index />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/ProductGallery" element={<ProductGallery />} />
+            <Route path="/productGallery" element={<ProductGallery />} />
             <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart  />} />
-
-            {/* other routes */}
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/orderSummary" element={<OrderSummary />} />
+            {/* Redirect to Login if the route is not matched */}
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </div>
     </Router>
   );
 }
-export default App;
 
+export default App;
