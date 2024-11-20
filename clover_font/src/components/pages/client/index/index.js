@@ -1,40 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Nav, Form, FormControl, Button, Card, ListGroup, Image } from 'react-bootstrap';
-import { FaUserFriends, FaClock, FaSave, FaUsers, FaVideo, FaStore, FaThumbsUp, FaComment, FaShare, FaTrash, FaEdit } from 'react-icons/fa';
+import { FaUserFriends, FaSave, FaStore, FaThumbsUp, FaComment, FaShare, FaTrash, FaEdit } from 'react-icons/fa';
+import { Link ,useNavigate} from 'react-router-dom';
 import './index.css';
 
 // Sidebar Navigation
 // Sidebar Component
 const Sidebar = () => (
   <Nav
-    defaultActiveKey="/home"
+    defaultActiveKey="home"
     className="flex-column mt-3 p-3shadow-sm sidebar"
     style={{ width: '350px' }} // Set a fixed width for the sidebar
   >
-    <Nav.Link href="#profile" className="text-dark mb-2 p-2">
+    <Nav.Link href="profile" className="text-dark mb-2 p-2">
       <FaUserFriends className="me-2" /> Bạn bè
     </Nav.Link>
-    <Nav.Link href="#memories" className="text-dark mb-2 p-2">
-      <FaClock className="me-2" /> Kỷ niệm
-    </Nav.Link>
-    <Nav.Link href="#saved" className="text-dark mb-2 p-2">
-      <FaSave className="me-2" /> Đã lưu
-    </Nav.Link>
-    <Nav.Link href="#groups" className="text-dark mb-2 p-2">
-      <FaUsers className="me-2" /> Nhóm
-    </Nav.Link>
-    <Nav.Link href="#videos" className="text-dark mb-2 p-2">
-      <FaVideo className="me-2" /> Video
-    </Nav.Link>
-    <Nav.Link href="/ProductGallery" className="text-dark mb-2 p-2">
-      <FaStore className="me-2" /> Marketplace
+    <Nav.Link href="ProductGallery" className="text-dark mb-2 p-2">
+      <FaStore className="me-2" /> Mua hàng
     </Nav.Link>
   </Nav>
 );
 
 
 // Post Component
-const Post = ({ postId, userImage, userName, timeStamp, content, likes, initialComments, accountId, onPostDeleted, fetchPosts, }) => {
+const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content, likes, initialComments, accountId, onPostDeleted, fetchPosts,userFullname }) => {
   // const [likesCount, setLikesCount] = useState(likes.length);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(likes.length);
@@ -45,25 +34,7 @@ const Post = ({ postId, userImage, userName, timeStamp, content, likes, initialC
   // Lấy accountId của người dùng từ localStorage
   const user = localStorage.getItem('user');
   const currentUserAccountId = user ? JSON.parse(user).accountId : null; // Kiểm tra và parse thông tin người dùng
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     fetch(`http://localhost:8080/api/post/checkLiked?postId=${postId}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         setLiked(data.liked);
-  //         console.log("Post liked status:", data.liked);
-  //       })
-  //       .catch((error) => console.error('Error checking liked status:', error));
-  //   }
-  // }, [postId]);
-
+  
 
   const handleLikePost = () => {
     const token = localStorage.getItem('token');
@@ -231,7 +202,14 @@ const Post = ({ postId, userImage, userName, timeStamp, content, likes, initialC
         .catch((error) => console.error('Error updating comment:', error));
     }
   };
-
+ 
+  const navigate = useNavigate();
+  const handleClick = (e) => {
+    if (userName === currentUserName) {
+      e.preventDefault(); // Ngăn không cho chuyển hướng mặc định
+      navigate('/user/profile'); // Điều hướng đến trang cá nhân
+    }
+  };
 
 
 
@@ -247,7 +225,10 @@ const Post = ({ postId, userImage, userName, timeStamp, content, likes, initialC
             />
           </Col>
           <Col xs={10}>
-            <h5>{userName}</h5>
+            <Link  key={userName} to={`/profiles/${userName}`} className="text-decoration-none text-dark" onClick={handleClick}>
+              <h5>{userFullname}</h5>
+            </Link>
+
             <p>{timeStamp}</p>
 
 
@@ -316,7 +297,7 @@ const Post = ({ postId, userImage, userName, timeStamp, content, likes, initialC
                       }}
                     >
                       <div style={{ flex: 1 }}>
-                        <strong>{comment?.account?.fullname || 'Người dùng ẩn'}:</strong>
+                        <strong>{commentItem?.account?.fullname || 'Người dùng ẩn'}:</strong>
                         {isEditing === commentItem.id ? (
                           <textarea
                             value={editedComment}
@@ -499,7 +480,8 @@ const MainContent = () => {
             key={post.id}
             postId={post.id}
             userImage={post?.account?.avatar ? `http://localhost:8080/images/${post.account.avatar}` : "default-avatar.png"}
-            userName={post?.account?.fullname || "Unknown User"}
+            userName={post?.account?.username || "Unknown User"}
+            userFullname={post?.account?.fullname}
             timeStamp={new Date(post.postDay).toLocaleString()}
             content={post.content}
             likes={post.likes || []}

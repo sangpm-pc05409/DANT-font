@@ -1,0 +1,262 @@
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  .profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Cover Section */
+  .cover-section {
+    background: linear-gradient(90deg, #4a90e2, #50b7f5);
+    height: 200px;
+    position: relative;
+  }
+  
+  .avatar {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 100px;
+    border: 4px solid white;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Profile Info */
+  .profile-info {
+    text-align: center;
+    margin-top: 60px;
+  }
+  
+  .profile-name {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  
+  .profile-friends {
+    color: #555;
+    font-size: 1em;
+  }
+  
+  /* Actions */
+  .profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .edit-btn {
+    background-color: #4a90e2;
+    color: white;
+  }
+  
+  .edit-btn:hover {
+    background-color: #3a78c2;
+  }
+  
+  .message-btn {
+    background-color: #e6e6e6;
+    color: #333;
+  }
+  
+  .message-btn:hover {
+    background-color: #d6d6d6;
+  }
+  
+  /* Navigation */
+  .profile-nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  
+  .nav-link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .nav-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* About Section */
+  .about-section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .about-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #4a90e2;
+  }
+  
+  .about-text {
+    font-size: 1em;
+    color: #555;
+  }
+  
+  /* Loading Spinner */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #4a90e2;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Error Message */
+  .error-container {
+    text-align: center;
+    color: #e74c3c;
+    padding: 20px;
+  }
+
+  /* Bố cục danh sách bài đăng */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Thẻ bài đăng */
+.post-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Header bài đăng */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.post-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.post-info h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.post-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Nội dung bài đăng */
+.post-content {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #333;
+}
+
+.post-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+/* Footer bài đăng */
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.post-footer button {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.post-footer button:hover {
+  color: #007bff;
+}
+/* Content bên trái */
+.post-content {
+  text-align: left; /* Căn nội dung sang trái */
+  margin-top: 10px;
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5; /* Khoảng cách giữa các dòng */
+}
+.post-images {
+  text-align: left; /* Căn lưới hình ảnh sang trái */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}

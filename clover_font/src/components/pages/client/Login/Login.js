@@ -20,7 +20,7 @@ export default function LoginForm() {
           password,
         },
       });
-
+      
       // Kiểm tra phản hồi
       if (response.status === 200 && response.data.status === "success") {
         localStorage.setItem("token", response.data.data); // Lưu token vào localStorage
@@ -29,7 +29,6 @@ export default function LoginForm() {
         setError(response.data.message || "Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại.");
       }
     } catch (err) {
-      console.error(err);
       setError("Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại."); // Hiển thị thông báo lỗi
     }
   };

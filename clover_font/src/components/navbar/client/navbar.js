@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Form, FormControl, Container, Row, Col, Dropdown } from 'react-bootstrap';
-import { FaRegBell } from "react-icons/fa";
 import { FaRegCommentDots } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { IoMdMenu } from "react-icons/io";
 import Logo from '../../images/Logo5.ico';
 import { FaCartShopping } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
+import { IoLogOutOutline } from "react-icons/io5";
+import { RiBillLine } from "react-icons/ri";
+import { RiMessengerLine } from "react-icons/ri";
 
 const FacebookNavbar = () => {
   const navigate = useNavigate();
@@ -79,26 +81,23 @@ const FacebookNavbar = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item href="/cart">
-                    <FaCartShopping style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Cart
+                  <Dropdown.Item href="cart">
+                    <FaCartShopping style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Giỏ hàng
                   </Dropdown.Item>
-                  <Dropdown.Item href="#messages">
-                    <FaRegCommentDots style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Messages
+                  <Dropdown.Item href="profile">
+                    <CgProfile style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Thông tin cá nhân
                   </Dropdown.Item>
-                  <Dropdown.Item href="#notifications">
-                    <FaRegBell style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Notifications
+                  <Dropdown.Item href="orderSummary">
+                    <RiBillLine style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Hóa đơn của bạn
                   </Dropdown.Item>
-                  <Dropdown.Item href="/profile">
-                    <CgProfile style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Profile
-                  </Dropdown.Item>
-                  <Dropdown.Item href="/orderSummary">
-                    <CgProfile style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Order Summary
+                  <Dropdown.Item href="chat">
+                    <RiMessengerLine style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Nhắn tin
                   </Dropdown.Item>
 
                   {/* Conditionally render the Logout option */}
                   {isLoggedIn && (
                     <Dropdown.Item onClick={handleLogout}>
-                      <CgProfile style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Logout
+                      <IoLogOutOutline style={{ fontSize: '1.5rem', marginRight: '10px' }} /> Đăng xuất
                     </Dropdown.Item>
                   )}
                 </Dropdown.Menu>
