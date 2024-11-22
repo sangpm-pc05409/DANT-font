@@ -17,8 +17,12 @@ import Order from './components/pages/client/OderCilent/oder_client';
 import UserProfile from './components/pages/client/UserProfile/UserProfile';
 
 
-// Trang login
+// Trang account
 import Login from './components/pages/client/Login/Login';
+import Register from './components/pages/client/Register/Register';
+import Forgot from './components/pages/client/ForgotPassword/Forgot';
+import CheckEmail from './components/pages/client/ForgotPassword/Checkmail';
+import ResetPassword from './components/pages/client/ForgotPassword/ResetPassword';
 
 // Các trang của admin
 import AccountManagement from './components/pages/Admin/AccountManagement/AccountManagement';
@@ -86,6 +90,18 @@ function App() {
       <Routes>
         {/* Route cho trang login */}
         <Route path="/login" element={<Login />} />
+
+        {/* Route cho trang login */}
+        <Route path="/register" element={<Register />} />
+
+        {/* Route cho trang forgot password */}
+        <Route path="/forgot-password" element={<Forgot />} />
+
+        {/* Route cho trang check mail sau khi fogotpass */}
+        <Route path="/check-email" element={<CheckEmail />} />
+
+        {/* Route cho trang ResetPassword sau khi checkmail */}
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Điều hướng tới trang người dùng chính nếu không có đường dẫn */}
         <Route path="/" element={<Navigate to="/login" />} />
