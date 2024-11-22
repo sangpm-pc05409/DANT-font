@@ -21,4 +21,17 @@
   .text-dark {
     color: #343a40; /* Darker text color for links */
   }
+
+  .comment-box {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+}
+
+.comment-box.show {
+  max-height: 500px; /* Hoặc giá trị phù hợp */
+  opacity: 1;
+}
+
   

@@ -73,7 +73,7 @@ const AccountManagement = () => {
         } else if (newAccount.username.length < 5 || newAccount.username.length > 20) {
             newErrors.username = 'Tên đăng nhập tối thiểu phải có 5 - 20 ký tự';
         }
-
+        
         // Kiểm tra trường password
         if (!newAccount.password) {
             newErrors.password = 'Mật khẩu không được để trống';

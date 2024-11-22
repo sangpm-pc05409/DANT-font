@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Nav, Form, FormControl, Button, Card, ListGroup, Image } from 'react-bootstrap';
 import { FaUserFriends, FaSave, FaStore, FaThumbsUp, FaComment, FaShare, FaTrash, FaEdit } from 'react-icons/fa';
-import { Link ,useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
+import Swal from "sweetalert2";
 import './index.css';
 
 // Sidebar Navigation
@@ -15,6 +17,9 @@ const Sidebar = () => (
     <Nav.Link href="profile" className="text-dark mb-2 p-2">
       <FaUserFriends className="me-2" /> Bạn bè
     </Nav.Link>
+    <Nav.Link href="profile" className="text-dark mb-2 p-2">
+      <FaUserFriends className="me-2" />
+    </Nav.Link>
     <Nav.Link href="ProductGallery" className="text-dark mb-2 p-2">
       <FaStore className="me-2" /> Mua hàng
     </Nav.Link>
@@ -23,7 +28,7 @@ const Sidebar = () => (
 
 
 // Post Component
-const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content, likes, initialComments, accountId, onPostDeleted, fetchPosts,userFullname }) => {
+const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content, likes, initialComments, accountId, onPostDeleted, fetchPosts, userFullname }) => {
   // const [likesCount, setLikesCount] = useState(likes.length);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(likes.length);
@@ -34,7 +39,7 @@ const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content
   // Lấy accountId của người dùng từ localStorage
   const user = localStorage.getItem('user');
   const currentUserAccountId = user ? JSON.parse(user).accountId : null; // Kiểm tra và parse thông tin người dùng
-  
+
 
   const handleLikePost = () => {
     const token = localStorage.getItem('token');
@@ -97,63 +102,138 @@ const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content
     }
   };
 
-
-
-
   const handleDeletePost = () => {
     const token = localStorage.getItem('token');
-    if (token) {
-      fetch(`http://localhost:8080/api/post/deletePost?id=${postId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        // Không cần gửi body nếu bạn đã gửi postId qua query params
-      })
-        .then((response) => {
-          if (!response.ok) {
-            return response.json().then((error) => {
-              console.error('Error deleting post:', error);
-              throw new Error('Failed to delete post');
-            });
-          } else {
-            // Nếu xóa thành công, gọi hàm thông báo xóa
-            onPostDeleted(postId);
-          }
-        })
-        .catch((error) => console.error('Error deleting post:', error));
-      console.log("Deleting post with ID:", postId);
-    }
-  };
-
-  const handleDeleteComment = async (commentID) => {
-    const token = localStorage.getItem("token");
     if (!token) {
-      return console.error("No token found. Redirecting to login...");
-    }
-
-    const url = `http://localhost:8080/api/social/comment/delete?id=${commentID}`;
-
-    try {
-      const response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,  // Gửi token qua header
-          "Content-Type": "application/json",
-        },
+      console.error('No token found. Cannot delete post.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Xóa bài thất bại!',
+        text: 'Không tìm thấy token xác thực.',
       });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-      // Xóa thành công, cập nhật danh sách bình luận
-      fetchPosts();
-      setComment('');
-    } catch (error) {
-      console.error("Error deleting comment:", error);
+      return;
     }
+  
+    Swal.fire({
+      title: 'Bạn có chắc chắn muốn xóa bài đăng này?',
+      text: 'Hành động này không thể hoàn tác!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Xóa',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:8080/api/post/deletePost?id=${postId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              return response.json().then((error) => {
+                console.error('Error deleting post:', error);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Xóa bài thất bại!',
+                  text: error.message || 'Đã có lỗi xảy ra, vui lòng thử lại.',
+                });
+                throw new Error('Failed to delete post');
+              });
+            } else {
+              // Thông báo xóa thành công
+              Swal.fire({
+                icon: 'success',
+                title: 'Xóa bài thành công!',
+                text: 'Bài đăng đã được xóa.',
+              });
+              onPostDeleted(postId); // Gọi hàm để cập nhật danh sách bài đăng
+            }
+          })
+          .catch((error) => {
+            console.error('Error deleting post:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Xóa bài thất bại!',
+              text: 'Bài đăng này không thuộc của tài khoản này !.',
+            });
+          });
+      }
+    });
   };
+  
+
+const handleDeleteComment = async (commentID) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    console.error("No token found. Redirecting to login...");
+    Swal.fire({
+      icon: 'error',
+      title: 'Xóa bình luận thất bại!',
+      text: 'Không tìm thấy token xác thực.',
+    });
+    return;
+  }
+
+  Swal.fire({
+    title: 'Bạn có chắc chắn muốn xóa bình luận này?',
+    text: 'Hành động này không thể hoàn tác!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Xóa',
+    cancelButtonText: 'Hủy',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const url = `http://localhost:8080/api/social/comment/delete?id=${commentID}`;
+
+      try {
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error deleting comment:", errorData);
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Xóa bình luận thất bại!',
+            text: errorData.message || 'Đã có lỗi xảy ra, vui lòng thử lại.',
+          });
+          return;
+        }
+
+        // Thông báo xóa thành công
+        Swal.fire({
+          icon: 'success',
+          title: 'Xóa bình luận thành công!',
+          text: 'Bình luận của bạn đã được xóa.',
+        });
+
+        // Cập nhật danh sách bình luận hoặc trạng thái
+        fetchPosts(); // Nếu cần cập nhật lại danh sách bài đăng và bình luận
+      } catch (error) {
+        console.error("Error deleting comment:", error);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Xóa bình luận thất bại!',
+          text: 'Bình luận này không thuộc của tài khoản này !',
+        });
+      }
+    }
+  });
+};
+
 
   const [isEditing, setIsEditing] = useState(null);
   const [editedComment, setEditedComment] = useState('');
@@ -166,43 +246,78 @@ const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content
 
   const handleUpdateComment = (commentId) => {
     const token = localStorage.getItem('token');
-    if (token) {
-      // Tạo đối tượng FormData
-      const formData = new FormData();
-      formData.append('id', commentId);
-      formData.append('content', editedComment); // Dữ liệu chỉnh sửa bình luận
-
-      fetch(`http://localhost:8080/api/social/comment/update`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // Không cần thiết lập 'Content-Type' khi gửi FormData
-        },
-        body: formData, // Sử dụng formData thay vì JSON
-      })
-        .then((response) => {
-          // Kiểm tra phản hồi
-          if (!response.ok) {
-            console.error('Error response:', response);
-            throw new Error('Network response was not ok');
-          }
-          return response.json(); // Phân tích JSON chỉ khi phản hồi thành công
-        })
-        .then((data) => {
-          // Xử lý dữ liệu phản hồi ở đây
-          setComments((prevComments) =>
-            prevComments.map((comment) =>
-              comment.id === commentId ? data : comment
-            )
-          );
-          setIsEditing(null);
-          setEditedComment('');
-          fetchPosts();
-        })
-        .catch((error) => console.error('Error updating comment:', error));
+    if (!token) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi!',
+        text: 'Không tìm thấy token xác thực. Vui lòng đăng nhập lại.',
+      });
+      return;
     }
+  
+    // Lấy bình luận gốc để reset nếu cần
+    const originalComment = comments.find((comment) => comment.id === commentId)?.content;
+  
+    // Tạo đối tượng FormData
+    const formData = new FormData();
+    formData.append('id', commentId);
+    formData.append('content', editedComment); // Dữ liệu chỉnh sửa bình luận
+  
+    fetch(`http://localhost:8080/api/social/comment/update`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // Không cần thiết lập 'Content-Type' khi gửi FormData
+      },
+      body: formData, // Sử dụng formData thay vì JSON
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            throw new Error(errorData.message || 'Cập nhật bình luận thất bại.');
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Xử lý khi cập nhật thành công
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id === commentId ? data : comment
+          )
+        );
+        setIsEditing(null);
+        setEditedComment('');
+        fetchPosts();
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Thành công!',
+          text: 'Bình luận đã được cập nhật thành công.',
+        });
+      })
+      .catch((error) => {
+        console.error('Error updating comment:', error);
+  
+        // Reset lại nội dung bình luận về trạng thái ban đầu
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment.id === commentId
+              ? { ...comment, content: originalComment } // Khôi phục nội dung gốc
+              : comment
+          )
+        );
+  
+        Swal.fire({
+          icon: 'error',
+          title: 'Cập nhật thất bại!',
+          text: 'Bình luận này không thuộc tài khoản này. Nội dung đã được reset.',
+        });
+      });
   };
- 
+  
+  
+
   const navigate = useNavigate();
   const handleClick = (e) => {
     if (userName === currentUserName) {
@@ -212,7 +327,8 @@ const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content
   };
 
 
-
+  //mã hóa userName
+  const encodedUserName = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(userName));
   return (
     <Card className="mb-3 mt-3 p-3 border shadow-sm">
       <Card.Body>
@@ -225,9 +341,18 @@ const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content
             />
           </Col>
           <Col xs={10}>
-            <Link  key={userName} to={`/profiles/${userName}`} className="text-decoration-none text-dark" onClick={handleClick}>
+            {/* <Link  key={userName} to={`/profiles/${userName}`} className="text-decoration-none text-dark" onClick={handleClick}>
+              <h5>{userFullname}</h5>
+            </Link> */}
+            <Link
+              key={userName}
+              to={`/profiles/${encodedUserName}`}
+              className="text-decoration-none text-dark"
+              onClick={handleClick}
+            >
               <h5>{userFullname}</h5>
             </Link>
+
 
             <p>{timeStamp}</p>
 
@@ -243,6 +368,7 @@ const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content
             <p>{content}</p>
           </Col>
         </Row>
+        <hr></hr>
         <Row className="text-center mt-3">
           <Col>
             <div
@@ -361,7 +487,6 @@ const Post = ({ currentUserName, postId, userImage, userName, timeStamp, content
           </div>
 
         )}
-
       </Card.Body>
     </Card>
   );
@@ -404,7 +529,9 @@ const MainContent = () => {
     setSelectedFiles(e.target.files);
   };
 
-  const handlePostSubmit = async (e) => {
+ 
+
+const handlePostSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
@@ -437,14 +564,35 @@ const MainContent = () => {
         setNewPostContent("");
         setSelectedFiles([]);
         fetchPosts();
+
+        // Thông báo thành công
+        Swal.fire({
+          icon: 'success',
+          title: 'Bài đăng thành công!',
+          text: 'Bài viết của bạn đã được đăng.',
+        });
       } else {
         const errorData = await response.json();
         console.error("Error creating post:", errorData);
+
+        // Thông báo lỗi
+        Swal.fire({
+          icon: 'error',
+          title: 'Đăng bài thất bại!',
+          text: errorData.message || 'Đã có lỗi xảy ra, vui lòng thử lại.',
+        });
       }
     } catch (error) {
       console.error("Error creating post:", error);
+
+      // Thông báo lỗi khi không kết nối được server
+      Swal.fire({
+        icon: 'error',
+        title: 'Đăng bài thất bại!',
+        text: 'Không thể kết nối đến máy chủ, vui lòng thử lại.',
+      });
     }
-  };
+};
 
 
   const handlePostDeleted = (postId) => {

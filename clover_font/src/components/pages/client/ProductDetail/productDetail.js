@@ -140,14 +140,14 @@ const ProductDetail = () => {
         </Col>
         {relatedProducts.length > 0 ? (
           relatedProducts.map((relatedProduct) => (
-            <Col md={3} key={relatedProduct.id} className="mb-4">
-              <Card onClick={() => navigate(`/user/product/${relatedProduct.id}`)} style={{ cursor: 'pointer' }}>
+            <Col md={3} key={relatedProduct.id} className="mb-4 product-grid">
+              <Card className="product-card" onClick={() => navigate(`/user/product/${relatedProduct.id}`)} style={{ cursor: 'pointer' }}>
                 <Card.Img variant="top" src={relatedProduct.prodImages && relatedProduct.prodImages[0]
                   ? `http://localhost:8080/images/${relatedProduct.prodImages[0].name}`
                   : "https://via.placeholder.com/150"} />
-                <Card.Body>
-                  <Card.Title>{relatedProduct.name}</Card.Title>
-                  <Card.Text>₫{relatedProduct.price.toLocaleString()}</Card.Text>
+                <Card.Body  className="product-content mt-3">
+                  <Card.Title className="product-title">{relatedProduct.name}</Card.Title>
+                  <Card.Text className="product-price">₫{relatedProduct.price.toLocaleString()}</Card.Text>
                 </Card.Body>
               </Card>
             </Col>

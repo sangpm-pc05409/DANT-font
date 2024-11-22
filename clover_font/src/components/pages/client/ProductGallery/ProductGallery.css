@@ -29,3 +29,43 @@
     font-size: 1rem; /* Adjust font size for badges */
   }
   
+  /* Tăng độ mượt mà và hiệu ứng khi di chuột */
+.search-input, .price-select {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:focus, .price-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Hiệu ứng hover cho button */
+.search-button {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Cải thiện spacing và làm cho các form đẹp hơn */
+.mb-4 {
+  margin-bottom: 20px !important;
+}
+
+.product-gallery .form-group {
+  margin-bottom: 15px;
+}
+
+/* Tạo thêm chút padding và góc bo tròn cho các thành phần nhập liệu */
+.form-control {
+  padding: 10px;
+  border-radius: 10px;
+}

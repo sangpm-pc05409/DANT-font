@@ -5,6 +5,8 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode"; // Lưu ý cú pháp import
 // Thư viện giải mã token
 import "./ProfilePage.css";
+import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState(null);
@@ -13,15 +15,19 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [formData, setFormData] = useState({ email: "", phoneNumber: "", fullname: "" });
+
   const [updatedData, setUpdatedData] = useState({
     fullname: "",
-    bio: "",
+    gender: ""
   });
   const [avatar, setAvatar] = useState(null);
 
   const token = localStorage.getItem("token");
   const decodedToken = token ? jwtDecode(token) : null; // Giải mã token
   const username = decodedToken?.sub; // Lấy `username` từ payload (thường là `sub`)
+
 
   // Lấy thông tin tài khoản
   useEffect(() => {
@@ -42,13 +48,14 @@ const ProfilePage = () => {
             },
           }
         );
-
+        console.log(response.data);
         if (response.data) {
           setProfileData(response.data);
           setUpdatedData({
             fullname: response.data.fullname || "",
             email: response.data.email || "",
             phone: response.data.phone || "",
+            gender: response.data.gender
           });
         } else {
           throw new Error("Không tìm thấy dữ liệu tài khoản.");
@@ -99,59 +106,152 @@ const ProfilePage = () => {
   };
 
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
 
+    setUpdatedData((prevData) => ({
+      ...prevData,
+      [name]: name === "gender" ? value === "true" : value, // Xử lý gender riêng
+    }));
+  };
 
-  //
-  // Cập nhật dữ liệu đã chỉnh sửa
   const handleUpdate = async () => {
-    const formData = new FormData();
-    formData.append("fullname", updatedData.fullname);
-    formData.append("email", updatedData.email);
-    formData.append("phone", updatedData.phone);
-    if (avatar) formData.append("avatar", avatar); // Only append if avatar is provided
+    if (!username) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Lỗi!',
+        text: 'Không xác định được người dùng.',
+      });
+      return;
+    }
   
-    // Logging formData contents
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
+    // Kiểm tra xem trường nào bị bỏ trống
+    const fields = [
+      { key: 'fullname', message: 'Tên đầy đủ không được bỏ trống.' },
+      { key: 'email', message: 'Email không được bỏ trống.' },
+      { key: 'phone', message: 'Số điện thoại không được bỏ trống.' },
+    ];
+    for (const field of fields) {
+      if (!updatedData[field.key]) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Lỗi!',
+          text: field.message,
+        });
+        return;
+      }
+    }
+    
+    // Kiểm tra độ dài của fullname
+    if (updatedData.fullname.length < 5 || updatedData.fullname.length > 20) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Lỗi!',
+        text: 'Vui lòng nhập tên đầy đủ từ 5 đến 20 ký tự.',
+      });
+      return;
+    }
+  
+    // Hàm kiểm tra email và số điện thoại hợp lệ
+    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPhone = (phone) => /^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})$/.test(phone);
+  
+    if (!isValidEmail(updatedData.email)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Email không hợp lệ.',
+      });
+      return;
+    }
+  
+    if (!isValidPhone(updatedData.phone)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Số điện thoại phải đúng định dạng +84 và từ 9-10 chữ số.',
+      });
+      return;
     }
   
     try {
       const response = await axios.put(
-        "http://localhost:8080/api/account/updateInfor",
-        formData,
+        `http://localhost:8080/api/home/account/updateInfor/${username}`,
+        {
+          id: username,
+          fullname: updatedData.fullname,
+          email: updatedData.email,
+          phone: updatedData.phone,
+          gender: updatedData.gender,
+        },
         {
           headers: {
             Authorization: `Bearer ${token || ""}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
-      
-      if (response.data) {
-        setProfileData(response.data); // Update profile data in state
-        setIsEditing(false); // Toggle edit mode
-        alert("Thông tin đã được cập nhật thành công!");
+  
+      if (response.status === 200 && response.data) {
+        setProfileData(response.data);
+        setIsEditing(false);
+        Swal.fire({
+          icon: 'success',
+          title: 'Thành công!',
+          text: 'Thông tin đã được cập nhật thành công!',
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Có lỗi xảy ra!',
+          text: 'Không thể cập nhật thông tin. Vui lòng thử lại.',
+        });
       }
     } catch (err) {
       console.error("Error updating profile:", err.response?.data || err.message);
-      alert("Có lỗi xảy ra khi cập nhật thông tin.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Có lỗi xảy ra khi cập nhật thông tin.',
+        text: err.response?.data || err.message,
+      });
     }
   };
   
 
-  // Xử lý thay đổi dữ liệu trong form
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+
 
   // Xử lý thay đổi ảnh đại diện
   const handleFileChange = (e) => {
     setAvatar(e.target.files[0]);
   };
+
+
+  //load sản phẩm của người dùng đó
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Giả sử token lưu trong localStorage
+        const response = await axios.get("http://localhost:8080/api/sell/product/getProductBySeller", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Có lỗi khi tải sản phẩm", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+
+  const navigate = useNavigate();
+  const handleCardClick = (id) => {
+    navigate(`/user/product/${id}`);
+  };
+
+
 
   if (isLoading) {
     return (
@@ -185,91 +285,101 @@ const ProfilePage = () => {
             alt="User Avatar"
             className="avatar-img"
           />
-          {isEditing && (
+          {/* {isEditing && (
             <input type="file" onChange={handleFileChange} className="file-input" />
-          )}
+          )} */}
         </div>
       </div>
 
       {/* Profile Info */}
       <div className="profile-info">
         {isEditing ? (
-          <>
-            <div className="container mt-5">
-              <h2 className="text-center mb-4">Thông Tin Người Dùng</h2>
-              <form>
-                <div className="row g-3">
-                  {/* Fullname */}
-                  <div className="col-md-12">
-                    <div className="form-floating">
-                      <input
-                        type="text"
-                        name="fullname"
-                        value={updatedData.fullname}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        id="fullname"
-                        placeholder="Tên người dùng"
-                      />
-                      <label htmlFor="fullname">Tên người dùng</label>
-                    </div>
-                  </div>
+          <div className="container mt-5">
+            <h2 className="text-center mb-4">Chỉnh sửa thông tin</h2>
+            <form>
+              <div className="form-floating mb-3">
+                <input
+                  type="text"
+                  name="fullname"
+                  value={updatedData.fullname}
+                  onChange={handleInputChange}
+                  className="form-control"
+                  id="fullname"
+                  placeholder="Tên đầy đủ"
+                />
+                <label htmlFor="fullname">Tên đầy đủ</label>
+              </div>
 
-                  {/* Email */}
-                  <div className="col-md-6">
-                    <div className="form-floating">
-                      <input
-                        type="email"
-                        name="email"
-                        value={updatedData.email}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        id="email"
-                        placeholder="Email"
-                      />
-                      <label htmlFor="email">Email</label>
-                    </div>
-                  </div>
+              <div className="form-floating mb-3">
+                <input
+                  type="email"
+                  name="email"
+                  value={updatedData.email}
+                  onChange={handleInputChange}
+                  className="form-control"
+                  id="email"
+                  placeholder="Email"
+                />
+                <label htmlFor="email">Email</label>
+              </div>
 
-                  {/* Phone */}
-                  <div className="col-md-6">
-                    <div className="form-floating">
-                      <input
-                        type="text"
-                        name="phone"
-                        value={updatedData.phone}
-                        onChange={handleInputChange}
-                        className="form-control"
-                        id="phone"
-                        placeholder="Số điện thoại"
-                      />
-                      <label htmlFor="phone">Số điện thoại</label>
-                    </div>
+              <div className="form-floating mb-3">
+                <input
+                  type="text"
+                  name="phone"
+                  value={updatedData.phone}
+                  onChange={handleInputChange}
+                  className="form-control"
+                  id="phone"
+                  placeholder="Số điện thoại"
+                />
+                <label htmlFor="phone">Số điện thoại</label>
+              </div>
+              <div className="form-group mb-3">
+                <label className="mb-2">Giới tính</label>
+                <div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value={false}
+                      checked={updatedData.gender === false}
+                      onChange={handleInputChange}
+                      className="form-check-input"
+                    />
+                    <label className="form-check-label">Nam</label>
+                  </div>
+                  <div className="form-check form-check-inline">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value={true}
+                      checked={updatedData.gender === true}
+                      onChange={handleInputChange}
+                      className="form-check-input"
+                    />
+                    <label className="form-check-label">Nữ</label>
                   </div>
                 </div>
-                {/* Submit Button */}
-              </form>
-            </div>
+              </div>
 
 
-
-
-
-          </>
+            </form>
+          </div>
         ) : (
           <>
-            <h2 className="profile-name">
-              {profileData.fullname || "Tên người dùng"}
-            </h2>
-            {/* <p className="profile-bio">
-              {profileData.email || "Chưa có thông tin email."}
+            <h2 className="profile-name">{profileData.fullname || "Tên người dùng"}</h2>
+            <hr></hr>
+            <p className="profile-bio"><strong>Email: </strong>{profileData.email || "Chưa có thông tin email."}</p>
+            <p className="profile-bio"><strong>Số điện thoại: </strong>{profileData.phone || "Chưa có thông tin số điện thoại."}</p>
+            <p className="profile-bio"><strong>Giới tính: </strong>
+              {profileData.gender === true ? "Nữ" : profileData.gender === false ? "Nam" : "Chưa cập nhật"}
             </p>
-            <p className="profile-bio">
-              {profileData.phone || "Chưa có thông tin số điện thoại."}
-            </p> */}
-          </>
 
+
+          </>
         )}
+
       </div>
       {/* Profile Actions */}
       <div className="profile-actions">
@@ -345,11 +455,37 @@ const ProfilePage = () => {
             </div>
           )}
         </Tab>
-
-
         <Tab eventKey="profile" title="Cửa hàng" className="text-center">
-          Cửa hàng
+          <h3>Cửa hàng</h3>
+          {loading ? (
+            <p>Đang tải...</p>
+          ) : (
+            <div className="product-grid">
+              {products.length > 0 ? (
+                products.map((prod) => (
+                  <div
+                    key={prod.id}
+                    className="product-card"
+                    onClick={() => handleCardClick(prod.id)}
+                  >
+                    <img
+                      src={prod.image || "https://via.placeholder.com/250"}
+                      alt={prod.name}
+                    />
+                    <div className="product-content mt-3">
+                      <h5 className="product-title">{prod.name}</h5>
+                      <p className="product-description">{prod.description}</p>
+                      <p className="product-price">{prod.price.toLocaleString()} VND</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p>Không có sản phẩm nào.</p>
+              )}
+            </div>
+          )}
         </Tab>
+
       </Tabs>
     </div>
   );

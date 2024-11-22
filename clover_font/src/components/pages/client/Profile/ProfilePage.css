@@ -1,226 +1,262 @@
 /* Global Styles */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-  }
-  
-  .profile-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  /* Cover Section */
-  .cover-section {
-    background: linear-gradient(90deg, #4a90e2, #50b7f5);
-    height: 200px;
-    position: relative;
-  }
-  
-  .avatar {
-    position: absolute;
-    bottom: -50px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 100px;
-    border: 4px solid white;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  /* Profile Info */
-  .profile-info {
-    text-align: center;
-    margin-top: 60px;
-  }
-  
-  .profile-name {
-    font-size: 1.8em;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  
-  .profile-friends {
-    color: #555;
-    font-size: 1em;
-  }
-  
-  /* Actions */
-  .profile-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
-  }
-  
-  .btn {
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .edit-btn {
-    background-color: #4a90e2;
-    color: white;
-  }
-  
-  .edit-btn:hover {
-    background-color: #3a78c2;
-  }
-  
-  .message-btn {
-    background-color: #e6e6e6;
-    color: #333;
-  }
-  
-  .message-btn:hover {
-    background-color: #d6d6d6;
-  }
-  
-  /* Navigation */
-  .profile-nav {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 20px 0;
-  }
-  
-  .nav-link {
-    color: #4a90e2;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .nav-link:hover {
-    text-decoration: underline;
-  }
-  
-  /* About Section */
-  .about-section {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .about-title {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    color: #4a90e2;
-  }
-  
-  .about-text {
-    font-size: 1em;
-    color: #555;
-  }
-  
-  /* Loading Spinner */
-  .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #4a90e2;
-    border-top: 4px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  /* Error Message */
-  .error-container {
-    text-align: center;
-    color: #e74c3c;
-    padding: 20px;
-  }
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  font-size: 16px; /* Tăng font size toàn bộ trang */
+  line-height: 1.6; /* Tăng khoảng cách dòng cho dễ đọc */
+}
 
-  /* Bố cục danh sách bài đăng */
+.profile-container {
+  max-width: 900px; /* Tăng độ rộng */
+  margin: 0 auto;
+  padding: 30px; /* Thêm padding để giao diện thoáng hơn */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Thêm shadow cho container */
+  border-radius: 10px; /* Làm bo góc cho container */
+  background-color: white;
+}
+
+/* Cover Section */
+.cover-section {
+  background: linear-gradient(90deg, #4a90e2, #50b7f5);
+  height: 250px; /* Tăng chiều cao */
+  position: relative;
+  border-radius: 10px 10px 0 0; /* Làm bo góc phần trên */
+}
+
+.avatar {
+  position: absolute;
+  bottom: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px; /* Tăng kích thước avatar */
+  height: 120px; /* Tăng kích thước avatar */
+  border: 5px solid white;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng khi hover */
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar:hover {
+  transform: translateX(-50%) scale(1.1); /* Phóng to avatar khi hover */
+}
+
+/* Profile Info */
+.profile-info {
+  text-align: center;
+  margin-top: 100px; /* Tăng khoảng cách giữa avatar và thông tin */
+}
+
+.profile-name {
+  font-size: 2em; /* Tăng kích thước tên */
+  font-weight: 700; /* Làm đậm chữ */
+  margin: 15px 0;
+  color: #333;
+  text-transform: capitalize; /* Để tên người dùng trông chuyên nghiệp hơn */
+  letter-spacing: 1px; /* Tăng khoảng cách giữa các chữ */
+}
+
+.profile-friends {
+  color: #555;
+  font-size: 1.2em; /* Tăng kích thước font cho thông tin bạn bè */
+  font-weight: 400; /* Thêm độ nhẹ cho font */
+  margin-bottom: 20px;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Tăng khoảng cách giữa các nút */
+  margin: 30px 0;
+}
+
+.btn {
+  padding: 12px 25px;
+  font-size: 1.1em; /* Tăng kích thước chữ trong nút */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Thêm hiệu ứng hover */
+}
+
+.edit-btn {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #3a78c2;
+  transform: scale(1.05); /* Phóng to khi hover */
+}
+
+.message-btn {
+  background-color: #e6e6e6;
+  color: #333;
+}
+
+.message-btn:hover {
+  background-color: #d6d6d6;
+  transform: scale(1.05); /* Phóng to khi hover */
+}
+
+/* Navigation */
+.profile-nav {
+  display: flex;
+  justify-content: center;
+  gap: 25px; /* Tăng khoảng cách giữa các menu */
+  margin: 30px 0;
+}
+
+.nav-link {
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1em; /* Tăng kích thước font các liên kết */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+  color: #007bff;
+}
+
+/* About Section */
+.about-section {
+  background-color: white;
+  border-radius: 10px; /* Làm bo góc mạnh hơn */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px; /* Thêm padding */
+  margin-top: 30px; /* Tăng khoảng cách trên */
+  transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng khi hover */
+}
+
+.about-section:hover {
+  transform: scale(1.02); /* Phóng to khi hover */
+}
+
+.about-title {
+  font-size: 1.8em; /* Tăng kích thước tiêu đề */
+  margin-bottom: 15px;
+  color: #4a90e2;
+  font-weight: bold;
+}
+
+.about-text {
+  font-size: 1.2em; /* Tăng kích thước font */
+  color: #555;
+  line-height: 1.6; /* Tăng khoảng cách dòng cho dễ đọc */
+}
+
+/* Loading Spinner */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.spinner {
+  width: 50px; /* Tăng kích thước spinner */
+  height: 50px;
+  border: 5px solid #4a90e2;
+  border-top: 5px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+      transform: rotate(360deg);
+  }
+}
+
+/* Error Message */
+.error-container {
+  text-align: center;
+  color: #e74c3c;
+  padding: 25px; /* Tăng padding */
+  font-size: 1.1em; /* Tăng kích thước font */
+}
+
+/* Bố cục danh sách bài đăng */
 .post-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 25px; /* Tăng khoảng cách giữa các bài đăng */
+  margin-top: 30px; /* Tăng khoảng cách trên */
 }
 
 /* Thẻ bài đăng */
 .post-card {
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 12px; /* Làm bo góc mạnh hơn */
+  padding: 20px; /* Thêm padding */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng khi hover */
+}
+
+.post-card:hover {
+  transform: scale(1.02); /* Phóng to khi hover */
 }
 
 /* Header bài đăng */
 .post-header {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px; /* Tăng khoảng cách dưới header */
 }
 
 .post-avatar {
-  width: 50px;
-  height: 50px;
+  width: 60px; /* Tăng kích thước avatar trong bài đăng */
+  height: 60px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 15px; /* Tăng khoảng cách với tên */
   object-fit: cover;
 }
 
 .post-info h4 {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px; /* Tăng kích thước tên */
   font-weight: 600;
 }
 
 .post-info p {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px; /* Tăng kích thước font */
   color: #555;
 }
 
 /* Nội dung bài đăng */
 .post-content {
-  margin-top: 10px;
-  font-size: 15px;
+  margin-top: 15px; /* Tăng khoảng cách trên */
+  font-size: 16px; /* Tăng kích thước nội dung */
   color: #333;
+  line-height: 1.6; /* Cải thiện khoảng cách dòng */
 }
 
 .post-images {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Tăng kích thước hình ảnh */
+  gap: 15px; /* Tăng khoảng cách giữa các hình */
+  margin-top: 15px;
 }
 
 .post-image {
   width: 100%;
   height: auto;
-  border-radius: 5px;
+  border-radius: 8px; /* Làm bo góc mạnh hơn */
   object-fit: cover;
 }
 
@@ -228,8 +264,8 @@ body {
 .post-footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
-  padding-top: 10px;
+  margin-top: 20px; /* Tăng khoảng cách dưới */
+  padding-top: 15px;
   border-top: 1px solid #eee;
 }
 
@@ -237,26 +273,70 @@ body {
   background: none;
   border: none;
   color: #555;
-  font-size: 14px;
+  font-size: 15px; /* Tăng kích thước font cho button */
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .post-footer button:hover {
   color: #007bff;
+  transform: scale(1.05); /* Phóng to khi hover */
 }
-/* Content bên trái */
-.post-content {
-  text-align: left; /* Căn nội dung sang trái */
-  margin-top: 10px;
-  font-size: 15px;
-  color: #333;
-  line-height: 1.5; /* Khoảng cách giữa các dòng */
-}
-.post-images {
-  text-align: left; /* Căn lưới hình ảnh sang trái */
+
+
+/* Grid danh sách sản phẩm */
+.product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
+  grid-template-columns: repeat(3, 1fr); /* Hiển thị 3 cột */
+  gap: 10px; /* Giữ khoảng cách giữa các sản phẩm */
+  padding: 10px;
+}
+
+/* Thẻ sản phẩm */
+.product-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px; /* Giảm bo góc */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 6cm; /* Đặt chiều rộng cố định */
+  height: 9cm; /* Đặt chiều cao cố định */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Ảnh sản phẩm */
+.product-card img {
+  width: 100%;
+  height: 70%; /* Chiếm nửa chiều cao của card */
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Nội dung sản phẩm */
+.product-content {
+  padding: 5px; /* Giảm padding nội dung */
+  text-align: center;
+  font-size: 1.4em; /* Giảm kích thước chữ */
+}
+
+.product-title {
+  font-size: 0.7em; /* Kích thước nhỏ hơn cho tiêu đề */
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.product-description {
+  display: none; /* Ẩn phần mô tả để tối ưu không gian */
+}
+
+.product-price {
+  font-size: 0.7em; /* Kích thước nhỏ hơn cho giá */
+  font-weight: bold;
+  color: red;
 }

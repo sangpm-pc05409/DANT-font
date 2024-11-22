@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // Layout và Navbar
 import FacebookNavbar from './components/navbar/client/navbar';
 import NavAdmin from './components/navbar/admin/Navbar';
+import NavSeller from './components/navbar/seller/Header';
 
 // Các trang của user
 import Index from './components/pages/client/index';
@@ -27,6 +28,14 @@ import PostList from './components/pages/Admin/Post/Post';
 import StaticalAd from './components/pages/Admin/StaticalAd/StaticalAd';
 import PropertyManager from './components/pages/Admin/Property/Property';
 import PropertyValueManager from './components/pages/Admin/PropertiesValues/PropertiesValue';
+//các trang của seller
+import Product from './components/pages/seller/Product/Product'
+import Promotion from './components/pages/seller/Promotions/Promotions';
+import Supplier from './components/pages/seller/Supplier/Supplier';
+import Bill from './components/pages/seller/Bill/Bill';
+
+
+
 //chat
 import ChatApp from './components/pages/client/chat/chat';
 // import ChatItem from './components/pages/client/chat/ChatItem';
@@ -80,6 +89,39 @@ function AdminLayout() {
   );
 }
 
+//layout component seller
+function SellerLayout() {
+  return (
+    <div >
+      <NavSeller />
+      <div className="content">
+      <div style={{ padding: '20px', marginLeft: '250px', width: 'calc(100% - 250px)' }}>
+          <Routes>
+            {/* Các route khác */}
+            <Route path="products" element={<Product />} />
+            <Route path="promotions" element={<Promotion />} />
+            <Route path="*" element={<Navigate to="/seller/products" />} />
+            <Route path="supplier" element={<Supplier />} />
+            <Route path="bill" element={<Bill />} />
+            {/* <Route path="/oders" element={<Oder />} />
+            <Route path="/products" element={<Product />} />
+           
+            <Route path="/posts" element={<Posts />} />
+            <Route path="/add-posts" element={<AddPosts />} />
+            <Route path="/add-product" element={<AddProduct />} />
+            <Route path="/add-promotion" element={<AddPromotion />} />
+            <Route path="/detailoder" element={<DetailOderr />} />
+            <Route path="/notification" element={<Typenotification />} />
+            <Route path="/suppliers" element={<Suppliers />} />
+            <Route path="/add-suppliers" element={<AddSuppliers />} /> */}
+          </Routes>
+          </div>
+        </div>
+      </div>
+    
+  );
+}
+
 function App() {
   return (
     <Router>
@@ -96,6 +138,10 @@ function App() {
         {/* Layout và route cho admin */}
 
         <Route path="/admin/*" element={<AdminLayout />} />
+
+        {/* Layout và route cho seller */}
+
+        <Route path="/seller/*" element={<SellerLayout />} />
 
         {/* Điều hướng tới trang user nếu không khớp route */}
         <Route path="*" element={<Navigate to="/user/index" />} />
