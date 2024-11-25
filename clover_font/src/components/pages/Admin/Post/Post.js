@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { getAllPosts, getBrowsePosts, getDenouncePosts, browsePost, denouncePost } from '../api/postApi';
+import { getAllPosts, getBrowsePosts, getDenouncePosts, browsePost, denouncePost, getPostById } from '../api/postApi';
 import './Post.css';
-
+import { Modal, Button } from 'react-bootstrap';
 const PostList = () => {
     const [activeTab, setActiveTab] = useState('all');
     const [allPosts, setAllPosts] = useState([]);
@@ -10,7 +10,8 @@ const PostList = () => {
     const [denouncePosts, setDenouncePosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(5); // Số bài đăng hiển thị trên mỗi trang
-
+    const [selectedPost, setSelectedPost] = useState(null); // Lưu bài đăng được chọn
+    const [showModal, setShowModal] = useState(false); // Trạng thái hiển thị modal
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -50,6 +51,19 @@ const PostList = () => {
         fetchDenouncePosts();
     }, []);
 
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedPost(null); // Xóa dữ liệu bài đăng được chọn khi đóng modal
+    };
+    const handleViewDetails = async (postId) => {
+        try {
+            const post = await getPostById(postId);
+            setSelectedPost(post);
+            setShowModal(true); // Hiển thị modal
+        } catch (error) {
+            console.error('Lỗi khi lấy chi tiết bài đăng:', error);
+        }
+    };
     const handleBrowse = async (postId) => {
         const result = await Swal.fire({
             title: 'Bạn có chắc chắn muốn duyệt bài viết này?',
@@ -58,11 +72,11 @@ const PostList = () => {
             confirmButtonText: 'Có, duyệt!',
             cancelButtonText: 'Không, hủy!'
         });
-    
+
         if (result.isConfirmed) {
             try {
                 const updatedPost = await browsePost(postId);
-                setAllPosts(allPosts.map(post => 
+                setAllPosts(allPosts.map(post =>
                     post.id === postId ? updatedPost : post
                 ));
                 Swal.fire('Đã duyệt!', 'Bài viết đã được duyệt.', 'success');
@@ -71,7 +85,7 @@ const PostList = () => {
             }
         }
     };
-    
+
     const handleDenounce = async (postId) => {
         const result = await Swal.fire({
             title: 'Bạn có chắc chắn muốn cảnh cáo bài viết này?',
@@ -80,7 +94,7 @@ const PostList = () => {
             confirmButtonText: 'Có, cảnh cáo!',
             cancelButtonText: 'Không, hủy!'
         });
-    
+
         if (result.isConfirmed) {
             try {
                 await denouncePost(postId);
@@ -97,14 +111,14 @@ const PostList = () => {
     // Tính toán các bài đăng hiện tại dựa trên trang và số bài đăng mỗi trang
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = (activeTab === 'all' ? allPosts : 
-                          activeTab === 'browse' ? browsePosts : 
-                          denouncePosts).slice(indexOfFirstPost, indexOfLastPost);
-    
+    const currentPosts = (activeTab === 'all' ? allPosts :
+        activeTab === 'browse' ? browsePosts :
+            denouncePosts).slice(indexOfFirstPost, indexOfLastPost);
+
     // Tổng số trang
-    const totalPosts = (activeTab === 'all' ? allPosts.length : 
-                        activeTab === 'browse' ? browsePosts.length : 
-                        denouncePosts.length);
+    const totalPosts = (activeTab === 'all' ? allPosts.length :
+        activeTab === 'browse' ? browsePosts.length :
+            denouncePosts.length);
     const totalPages = Math.ceil(totalPosts / postsPerPage);
 
     // Chuyển trang
@@ -142,6 +156,7 @@ const PostList = () => {
                 }}>
                     Bài Đăng Bị Tố Cáo
                 </button>
+
             </div>
 
             <table className="table table-striped table-hover mt-3">
@@ -173,6 +188,12 @@ const PostList = () => {
                                 {post.status && (post.status.id === 1 || post.status.id === 3) && (
                                     <button className="btn btn-warning btn-sm me-2" onClick={() => handleDenounce(post.id)}>Cảnh cáo</button>
                                 )}
+                                <button
+                                    className="btn btn-primary btn-sm me-2"
+                                    onClick={() => handleViewDetails(post.id)}
+                                >
+                                    Xem chi tiết
+                                </button>
                             </td>
                         </tr>
                     ))}
@@ -197,6 +218,35 @@ const PostList = () => {
                     Tiếp theo
                 </button>
             </div>
+            {/* Modal chi tiết bài đăng */}
+            {selectedPost && (
+                <Modal show={showModal} onHide={closeModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Chi tiết bài đăng</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p><strong>Tên bài viết:</strong> {selectedPost.title}</p>
+                        <p><strong>Ngày đăng:</strong> {new Date(selectedPost.postDay).toLocaleDateString()}</p>
+                        <p><strong>Nội dung:</strong> {selectedPost.content}</p>
+                        <p><strong>Người đăng:</strong> {selectedPost.account ? selectedPost.account.fullname : 'N/A'}</p>
+                        <p><strong>Hình ảnh:</strong></p>
+                        {selectedPost.imageUrl ? (
+                            <img
+                                src={selectedPost.imageUrl}
+                                alt="Hình ảnh bài đăng"
+                                style={{ width: '100%', height: 'auto' }}
+                            />
+                        ) : (
+                            <p>Không có hình ảnh</p>
+                        )}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={closeModal}>
+                            Đóng
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )}
         </div>
     );
 };

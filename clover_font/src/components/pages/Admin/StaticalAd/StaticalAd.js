@@ -20,7 +20,7 @@ const StaticalAd = () => {
     // Trạng thái cho các trường nhập liệu
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [shopId, setShopId] = useState('');
+    const [nameShop, setShopId] = useState('');
 
     // Thêm trạng thái lỗi cho ngày
     const [dateError, setDateError] = useState('');
@@ -45,7 +45,7 @@ const StaticalAd = () => {
 
     // Gọi API khi component được mount
     useEffect(() => {
-        fetchStaticalAds(startDate, endDate, shopId); // Gọi hàm fetch ban đầu
+        fetchStaticalAds(startDate, endDate, nameShop); // Gọi hàm fetch ban đầu
     }, []); // Mảng rỗng nghĩa là chỉ gọi khi component được mount
 
     // Xử lý khi người dùng nhấn nút "Lọc"
@@ -60,7 +60,7 @@ const StaticalAd = () => {
             setDateError(''); // Reset lỗi nếu hợp lệ
         }
 
-        fetchStaticalAds(startDate, endDate, shopId); // Gọi API với giá trị mới của startDate, endDate, shopId
+        fetchStaticalAds(startDate, endDate, nameShop); // Gọi API với giá trị mới của startDate, endDate, shopId
         setCurrentPage(1); // Reset về trang 1 khi lọc
     };
 
@@ -138,12 +138,12 @@ const StaticalAd = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="shopId" className="form-label">Shop ID:</label>
+                    <label htmlFor="nameShop" className="form-label">Tên Shop:</label>
                     <input
                         type="number"
-                        id="shopId"
+                        id="nameShop"
                         className="form-control"
-                        value={shopId}
+                        value={nameShop}
                         onChange={(e) => setShopId(e.target.value)}
                     />
                 </div>
