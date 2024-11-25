@@ -24,7 +24,7 @@ export default function LoginForm() {
 
     try {
       // Gửi yêu cầu đăng nhập đến API
-      const response = await axios.post("http://localhost:8080/api/login", null, {
+      const response = await axios.get("http://localhost:8080/api/login",{
         params: {
           username,
           password,

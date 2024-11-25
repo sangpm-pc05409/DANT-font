@@ -5,7 +5,7 @@ const API_MAIN_URL = 'http://localhost:8080/api';
 const API_URL = '/account';
 const API_CHECK_TOKEN_FORGOT = 'http://localhost:8080/api/forgotPassword';
 const API_CHANGE_PASSWORD_FORGOT = 'http://localhost:8080/api/forgotPassword';
-const API_ORDER_URL = '/order/getUser';
+const API_ORDER_URL = 'http://localhost:8080/api/account';
 const API_CHECK_USER_FORGOTPASSWORD = 'http://localhost:8080/api/forgotPassword';
 const API_INFOR_URL = '/inforuser/infoClient';
 const API_CHECKPOINT_URL = '/order/check-point';
@@ -51,13 +51,9 @@ export const getAllAccounts = async () => {
 };
 //LẤY USER QUA USERNAME
 // Hàm này sẽ lấy thông tin tài khoản người dùng từ API, sử dụng token từ header
-export const getAccountByUsername = async (username, token) => {
+export const getAccountByUsername = async ( token) => {
     try {
-        const response = await axios.get(`${API_ORDER_URL}/${username}`, {
-            headers: {
-                Authorization: `Bearer ${token}`, // Gửi token trong header
-            }
-        });
+        const response = await axiosInstance.get(API_URL);
         return response.data; // Trả về dữ liệu người dùng
     } catch (error) {
         console.error("Error fetching account data:", error);

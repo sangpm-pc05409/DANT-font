@@ -340,3 +340,56 @@ body {
   font-weight: bold;
   color: red;
 }
+
+.pagination-controls {
+  position: sticky; /* Hoặc fixed nếu muốn cố định trên toàn màn hình */
+  bottom: 0; /* Dính ở cuối container */
+  width: 100%; /* Đảm bảo độ rộng đầy đủ */
+  background-color: #fff; /* Tùy chỉnh nền nếu cần */
+  text-align: center;
+  padding: 10px 0;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+  z-index: 1000; /* Đảm bảo nằm trên các phần tử khác */
+}
+
+.tab-content {
+  position: relative; /* Đặt vị trí tương đối để quản lý nội dung */
+  padding-bottom: 50px; /* Tạo khoảng trống bên dưới cho nút phân trang */
+}
+
+.pagination-controls {
+  position: absolute; /* Đặt nút trong container cha */
+  bottom: 0; /* Căn xuống dưới */
+  left: 50%; /* Căn giữa theo chiều ngang */
+  transform: translateX(-50%); /* Dịch chuyển để nút nằm chính giữa */
+  display: flex; /* Sử dụng flexbox để căn hàng ngang */
+  gap: 10px; /* Tạo khoảng cách giữa các nút */
+  background: #fff; /* Màu nền */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+}
+
+.pagination-controls button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-controls button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #0056b3;
+  color: white;
+}
+
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  background-color: #e9ecef;
+}

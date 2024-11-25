@@ -13,7 +13,7 @@ axiosInstance.interceptors.request.use(
     const token = localStorage.getItem("token");
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
-      console.log("Token in request:", token); // Log để kiểm tra token
+ 
     }
     return config;
   },
@@ -36,22 +36,15 @@ const productService = {
 
   // Thêm sản phẩm mới
   createProduct: async (productData) => {
-    const formData = new FormData();
-
-    // Thêm các thông tin sản phẩm vào FormData
-    Object.keys(productData).forEach((key) => {
-      formData.append(key, productData[key]);
-    });
-
-    // Kiểm tra và thêm ảnh vào FormData nếu có
-    if (productData.images && Array.isArray(productData.images)) {
-      productData.images.forEach((image) => {
-        formData.append("file", image);  // Đảm bảo rằng bạn đang truyền đúng tên key 'file' như API yêu cầu
-      });
-    }
-
+   console.log(productData);
+   
     try {
-      const response = await axiosInstance.post("/create", formData, {
+     
+
+      for (let pair of productData.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
+      const response = await axiosInstance.post("/create", productData, {
         headers: { "Content-Type": "multipart/form-data" },  // Đặt header Content-Type đúng
       });
       return response.data;
@@ -62,22 +55,29 @@ const productService = {
   },
 
   // Cập nhật sản phẩm
-  updateProduct: async (productData, files) => {
-    const formData = new FormData();
-
-    // Thêm dữ liệu sản phẩm vào FormData
-    Object.keys(productData).forEach((key) => formData.append(key, productData[key]));
-
-    // Thêm hình ảnh vào FormData nếu có
-    if (files && files.length) {
-      files.forEach((file) => formData.append("file", file));
+  updateProduct: async (productData) => {
+    
+    
+  
+    for (let pair of productData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
     }
-
-    const response = await axiosInstance.put("/update", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
+  
+    // Gửi yêu cầu PUT
+    try {
+      const response = await axiosInstance.put("/update", productData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
+    } catch (error) {
+      // In chi tiết lỗi để dễ dàng debug
+      console.error("Error updating product:", error.response ? error.response.data : error);
+      throw error;
+    }
   },
+  
+  
+
 
   // Xóa sản phẩm
   deleteProduct: async (id) => {

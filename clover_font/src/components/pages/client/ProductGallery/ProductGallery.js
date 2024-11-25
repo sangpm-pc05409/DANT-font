@@ -27,7 +27,7 @@ const ProductCard = ({ id, title, price, location, imageUrl }) => {
         </div>
         <Card.Body className="text-dark border-5 product-content">
           <Card.Text className="fw-bold product-title">{title}</Card.Text>
-          <Card.Title className="product-price">{price} đ</Card.Title>
+          <Card.Title className="product-price text-danger">{price} đ</Card.Title>
         </Card.Body>
       </Card>
     </Col>
@@ -55,7 +55,7 @@ const ProductGallery = () => {
             'Content-Type': 'application/json',
           },
         });
-
+        
         if (!response.ok) {
           const errorMessage = await response.text();
           throw new Error(errorMessage || 'Cannot load data from server');
@@ -65,6 +65,8 @@ const ProductGallery = () => {
         setProducts(data);
         setFilteredProducts(data); // Set initial filtered products
         setLoading(false);
+        console.log(data);
+        
       } catch (error) {
         console.error('Error fetching products:', error);
         setLoading(false);
@@ -121,7 +123,6 @@ const ProductGallery = () => {
             />
           </Form.Group>
         </Col>
-
         <Col md={3}>
           <Form.Group controlId="minPrice">
             <Form.Label>Giá tối thiểu</Form.Label>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllSuppliers, createSupplier, updateSupplier, deleteSupplier,get } from "../api/supplierApi"; // API bạn đã tạo
+import { getAllSuppliers, createSupplier, updateSupplier, deleteSupplier,getSuppliersByProduct} from "../api/supplierApi"; // API bạn đã tạo
 import Swal from "sweetalert2"; // Import SweetAlert2
 
 export default function Suppliers() {
@@ -14,7 +14,7 @@ export default function Suppliers() {
     useEffect(() => {
         const fetchSuppliers = async () => {
             try {
-                const data = await getAllSuppliers();
+                const data = await getSuppliersByProduct();
                 console.log(data);
                 setSuppliers(data);
             } catch (error) {
@@ -69,83 +69,82 @@ export default function Suppliers() {
     );
 
     return (
-        <div className="d-flex">
-            <div style={{ marginLeft: "140px", width: "calc(100% - 250px)" }} className="p-4">
-                <h2 className="mb-4 text-center">Danh sách nhà cung cấp</h2>
-                {error && <div className="alert alert-danger">{error}</div>}
-
-                <div className="row mb-3">
-                    <div className="col-md-8">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Nhập tên nhà cung cấp để tìm..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-md-4 text-end">
-                        <button className="btn btn-primary" onClick={handleAddSupplier}>
-                            <i className="bi bi-plus-circle me-2"></i>Thêm nhà cung cấp
-                        </button>
-                    </div>
-                </div>
-
-                {showForm ? (
-                    <SupplierForm
-                        formType={formType}
-                        supplier={selectedSupplier}
-                        onClose={() => setShowForm(false)}
-                        onRefresh={setSuppliers}
+        <div className="container">
+            <h2 className="mb-4 text-center">Danh sách Nhà Cung Cấp</h2>
+            {error && <div className="alert alert-danger">{error}</div>}
+    
+            <div className="row mb-3">
+                <div className="col-md-8">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Nhập tên nhà cung cấp để tìm..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                ) : (
-                    <div className="table-responsive">
-                        <table className="table table-striped table-bordered">
-                            <thead className="table-dark">
-                                <tr>
-                                    <th scope="col">Tên nhà cung cấp</th>
-                                    <th scope="col">Địa chỉ</th>
-                                    <th scope="col">Số điện thoại</th>
-                                    <th scope="col" className="text-center">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredSuppliers.length > 0 ? (
-                                    filteredSuppliers.map((supplier) => (
-                                        <tr key={supplier.id}>
-                                            <td>{supplier.name}</td>
-                                            <td>{supplier.address}</td>
-                                            <td>{supplier.phone}</td>
-                                            <td className="text-center">
-                                                <button
-                                                    onClick={() => handleEditSupplier(supplier)}
-                                                    className="btn btn-sm btn-warning me-2"
-                                                >
-                                                    <i className="bi bi-pencil"></i> Sửa
-                                                </button>
-                                                <button
-                                                    onClick={() => deleteSupplierHandler(supplier.id)}
-                                                    className="btn btn-sm btn-danger"
-                                                >
-                                                    <i className="bi bi-trash"></i> Xoá
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="4" className="text-center">
-                                            Không tìm thấy nhà cung cấp.
+                </div>
+                <div className="col-md-4 text-end">
+                    <button className="btn btn-primary" onClick={handleAddSupplier}>
+                        <i className="bi bi-plus-circle me-2"></i>Thêm nhà cung cấp
+                    </button>
+                </div>
+            </div>
+    
+            {showForm ? (
+                <SupplierForm
+                    formType={formType}
+                    supplier={selectedSupplier}
+                    onClose={() => setShowForm(false)}
+                    onRefresh={setSuppliers}
+                />
+            ) : (
+                <div className="table-responsive">
+                    <table className="table table-striped table-bordered">
+                        <thead className="table-dark">
+                            <tr>
+                                <th scope="col">Tên nhà cung cấp</th>
+                                <th scope="col">Địa chỉ</th>
+                                <th scope="col">Số điện thoại</th>
+                                <th scope="col" className="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredSuppliers.length > 0 ? (
+                                filteredSuppliers.map((supplier) => (
+                                    <tr key={supplier.id}>
+                                        <td>{supplier.name}</td>
+                                        <td>{supplier.address}</td>
+                                        <td>{supplier.phone}</td>
+                                        <td className="text-center">
+                                            <button
+                                                onClick={() => handleEditSupplier(supplier)}
+                                                className="btn btn-sm btn-warning me-2"
+                                            >
+                                                <i className="bi bi-pencil"></i> Sửa
+                                            </button>
+                                            <button
+                                                onClick={() => deleteSupplierHandler(supplier.id)}
+                                                className="btn btn-sm btn-danger"
+                                            >
+                                                <i className="bi bi-trash"></i> Xoá
+                                            </button>
                                         </td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" className="text-center">
+                                        Không tìm thấy nhà cung cấp.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
+    
 }
 
 function SupplierForm({ formType, supplier, onClose, onRefresh }) {

@@ -32,6 +32,20 @@ export default function ProductCards() {
       setLoading(false);
     }
   };
+  const groupByShop = (items) => {
+    return items.reduce((groups, item) => {
+      const shopId = item?.prod?.shop?.id || "unknown"; // Sử dụng `id` của shop làm khóa
+      const shopName = item?.prod?.shop?.name || "Unknown Shop"; // Tên cửa hàng để hiển thị
+  
+      if (!groups[shopId]) {
+        groups[shopId] = { name: shopName, items: [] };
+      }
+      groups[shopId].items.push(item);
+      return groups;
+    }, {});
+  };
+  
+  const groupedCartItems = groupByShop(cartItems);
 
   useEffect(() => {
     if (token) fetchCart();
@@ -126,7 +140,7 @@ export default function ProductCards() {
         <Row className="justify-content-center align-items-center h-100">
           <Col md="10">
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h3 className="fw-normal mb-0 text-black">Your Cart</h3>
+              <h3 className="fw-normal mb-0 text-black">Giỏ hàng của bạn</h3>
               <Form.Check
                 type="checkbox"
                 label="Select All"
@@ -142,48 +156,55 @@ export default function ProductCards() {
             ) : cartItems.length === 0 ? (
               <p>No products in your cart.</p>
             ) : (
-              cartItems.map((item) => (
-                <Card className="rounded-3 mb-4" key={item.id}>
-                  <Card.Body className="p-4">
-                    <Row className="justify-content-between align-items-center">
-                      <Col md="1">
-                        <Form.Check
-                          type="checkbox"
-                          checked={selectedItems.includes(item.id)}
-                          onChange={() => handleSelect(item.id)}
-                        />
-                      </Col>
-                      <Col md="2">
-                        <Card.Img
-                          className="rounded-3"
-                          src={item.prod?.image ? `http://localhost:8080/images/${item.prod.image}` : "https://via.placeholder.com/150"}
-                          alt={item.prod?.name || "Product Image"}
-                        />
-                      </Col>
-                      <Col md="3">
-                        <p className="lead fw-normal mb-2">{item.prod?.name || "Unknown Product"}</p>
-                      </Col>
-                      <Col md="2" className="d-flex align-items-center justify-content-around">
-                        <Button variant="link" className="px-2" onClick={() => handleDecrease(item.id)}>
-                          <AiOutlineMinus />
-                        </Button>
-                        <Form.Control className="text-center" min={0} value={item.quantity} type="number" readOnly size="sm" />
-                        <Button variant="link" className="px-2" onClick={() => handleIncrease(item.id)}>
-                          <AiOutlinePlus />
-                        </Button>
-                      </Col>
-                      <Col md="2" className="d-flex align-items-center justify-content-end">
-                        <h5 className="mb-0">{(item.prod?.price * item.quantity).toFixed(2)} VNĐ</h5>
-                      </Col>
-                      <Col md="1" className="d-flex align-items-center justify-content-end">
-                        <Button variant="link" className="text-danger" onClick={() => handleRemove(item.id)}>
-                          <AiOutlineDelete size={24} />
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Card.Body>
-                </Card>
+              Object.entries(groupedCartItems).map(([shopId, group]) => (
+                <div key={shopId} className="mb-4">
+                  <h5 className=" text-secondary">{group.name}</h5> {/* Hiển thị tên cửa hàng */}
+                  {group.items.map((item) => (
+                    <Card className="rounded-3 mb-4" key={item.id}>
+                      <Card.Body className="p-4">
+                        <Row className="justify-content-between align-items-center">
+                          <Col md="1">
+                            <Form.Check
+                              type="checkbox"
+                              checked={selectedItems.includes(item.id)}
+                              onChange={() => handleSelect(item.id)}
+                            />
+                          </Col>
+                          <Col md="2">
+                            <Card.Img
+                              className="rounded-3"
+                              src={item.prod?.image ? `http://localhost:8080/images/${item.prod.image}` : "https://via.placeholder.com/150"}
+                              alt={item.prod?.name || "Product Image"}
+                            />
+                          </Col>
+                          <Col md="3">
+                            <p className="lead fw-normal mb-2">{item.prod?.name || "Unknown Product"}</p>
+                          </Col>
+                          <Col md="2" className="d-flex align-items-center justify-content-around">
+                            <Button variant="link" className="px-2" onClick={() => handleDecrease(item.id)}>
+                              <AiOutlineMinus />
+                            </Button>
+                            <Form.Control className="text-center" min={0} value={item.quantity} type="number" readOnly size="sm" />
+                            <Button variant="link" className="px-2" onClick={() => handleIncrease(item.id)}>
+                              <AiOutlinePlus />
+                            </Button>
+                          </Col>
+                          <Col md="2" className="d-flex align-items-center justify-content-end">
+                            <h5 className="mb-0">{(item.prod?.price * item.quantity).toFixed(2)} VNĐ</h5>
+                          </Col>
+                          <Col md="1" className="d-flex align-items-center justify-content-end">
+                            <Button variant="link" className="text-danger" onClick={() => handleRemove(item.id)}>
+                              <AiOutlineDelete size={24} />
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Card.Body>
+                    </Card>
+                  ))}
+                </div>
               ))
+              
+              
             )}
 
             {cartItems.length > 0 && !loading && (

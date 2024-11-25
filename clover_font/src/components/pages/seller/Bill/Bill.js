@@ -96,9 +96,9 @@ export default function Bills() {
                                         <td>{bill.phone}</td>
                                         <td>{bill.totalPayment}</td>
                                         <td>{bill.paymentMethods}</td>
-                                        <td>{bill.status?.name || 'Chưa xác nhận'}</td>
+                                        <td>{bill.status?.name}</td>
                                         <td className="text-center">
-                                            {bill.status.id === 4 && (
+                                            {bill.status.id === 1 && (
                                                 <>
                                                     <button
                                                         onClick={() => handleConfirmBill(bill.id)}

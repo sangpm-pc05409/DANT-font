@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col,  Card, Button } from "react-bootstrap";
-import { FaShoppingCart,  FaStar } from "react-icons/fa";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { FaShoppingCart, FaStar } from "react-icons/fa";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -49,19 +49,22 @@ const ProductDetail = () => {
   const { name, price = 0, description, ratings = 0, prodImages, shop } = product;
   const imageUrl = prodImages && prodImages[0] ? `http://localhost:8080/images/${prodImages[0].name}` : "https://via.placeholder.com/150";
 
-  const shopInfo = shop ? {
-    name: shop.name,
-    address: `${shop.streetnameNumber}, ${shop.wards}, ${shop.district}`,
-    city: `${shop.city}`,
-    province: `${shop.province}`,
-    nation: `${shop.nation}`
-  } : null;
+  const shopInfo = shop
+    ? {
+      name: shop.name,
+      address: shop.address,
+      city: shop.districtName, // Hoặc có thể là shop.city tùy cách bạn đặt
+      province: shop.wardName, // Dùng wardName hoặc sửa lại theo đúng province nếu cần
+      nation: "Vietnam", // Nếu quốc gia luôn cố định
+    }
+    : null;
+
 
   // Handle add to cart
   const handleAddToCart = async () => {
     try {
       const token = localStorage.getItem('token');
-  
+
       if (!token) {
         toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
         return;
@@ -70,7 +73,7 @@ const ProductDetail = () => {
       const formData = new FormData();
       formData.append("id", id); // The product ID
       formData.append("quantity", 1); // Default quantity of 1
-  
+
       const response = await fetch(`http://localhost:8080/api/user/shopping/product/addToCart`, {
         method: 'POST',
         headers: {
@@ -89,9 +92,9 @@ const ProductDetail = () => {
       console.error("Error adding product to cart:", error);
       toast.error("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
     }
-    
+
   };
-  
+
 
   return (
     <Container className="mt-5">
@@ -124,12 +127,22 @@ const ProductDetail = () => {
       {shopInfo && (
         <Row className="mt-4 bg-light p-3 rounded">
           <Col md={12}>
-            <h5 className="mb-3">Thông tin cửa hàng</h5>
-            <p><strong>Tên cửa hàng:</strong> {shopInfo.name}</p>
-            <p><strong>Địa chỉ:</strong> {shopInfo.address}</p>
-            <p><strong>Thành phố:</strong> {shopInfo.city}</p>
-            <p><strong>Tỉnh/Thành phố:</strong> {shopInfo.province}</p>
-            <p><strong>Quốc gia:</strong> {shopInfo.nation}</p>
+            <p>
+              <strong>Tên cửa hàng:</strong> {shopInfo.name}
+            </p>
+            <p>
+              <strong>Địa chỉ:</strong> {shopInfo.address}
+            </p>
+            <p>
+              <strong>Thành phố:</strong> {shopInfo.city}
+            </p>
+            <p>
+              <strong>Tỉnh/Thành phố:</strong> {shopInfo.province}
+            </p>
+            <p>
+              <strong>Quốc gia:</strong> {shopInfo.nation}
+            </p>
+
           </Col>
         </Row>
       )}
@@ -145,7 +158,7 @@ const ProductDetail = () => {
                 <Card.Img variant="top" src={relatedProduct.prodImages && relatedProduct.prodImages[0]
                   ? `http://localhost:8080/images/${relatedProduct.prodImages[0].name}`
                   : "https://via.placeholder.com/150"} />
-                <Card.Body  className="product-content mt-3">
+                <Card.Body className="product-content mt-3">
                   <Card.Title className="product-title">{relatedProduct.name}</Card.Title>
                   <Card.Text className="product-price">₫{relatedProduct.price.toLocaleString()}</Card.Text>
                 </Card.Body>

@@ -75,110 +75,100 @@ export default function Promotions() {
     );
 
     return (
-        <div className="d-flex">
-            {/* Content */}
-            <div style={{ marginLeft: "140px", width: "calc(100% - 250px)" }} className="p-4">
-                <h2 className="mb-4 text-center">Danh sách khuyến mãi</h2>
-                {error && <div className="alert alert-danger">{error}</div>}
-
-                <div className="row mb-3">
-                    <div className="col-md-8">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Nhập tên khuyến mãi để tìm..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-md-4 text-end">
-                        <button className="btn btn-primary" onClick={handleAddPromotion}>
-                            <i className="bi bi-plus-circle me-2"></i>Thêm khuyến mãi
-                        </button>
-                    </div>
-                </div>
-
-                {showForm ? (
-                    <PromotionForm
-                        formType={formType}
-                        promotion={selectedPromotion}
-                        onClose={() => setShowForm(false)}
-                        onRefresh={setPromotions}
+        <div className="container">
+            <h2 className="mb-4 text-center">Danh sách Khuyến mãi</h2>
+            <div className="row mb-3">
+                <div className="col-md-8">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Nhập tên khuyến mãi để tìm..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                ) : (
-                    <div className="table-responsive">
-                        <table className="table table-striped table-bordered">
-                            <thead className="table-dark">
-                                <tr>
-                                    <th scope="col">Tên khuyến mãi</th>
-                                    <th scope="col">Giảm giá (%)</th>
-                                    <th scope="col">Ngày bắt đầu</th>
-                                    <th scope="col">Ngày kết thúc</th>
-                                    <th scope="col" className="text-center">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredPromotions.length > 0 ? (
-                                    filteredPromotions.map((promotion) => (
-                                        <tr key={promotion.id}>
-                                            <td>{promotion.name}</td>
-                                            <td>{promotion.percentDiscount}%</td>
-                                            <td>
-                                                {promotion.startDay ? `${new Intl.DateTimeFormat('vi-VN', {
+                </div>
+                <div className="col-md-4 text-end">
+                    <button className="btn btn-primary" onClick={handleAddPromotion}>
+                        <i className="bi bi-plus-circle me-2"></i>Thêm khuyến mãi
+                    </button>
+                </div>
+            </div>
+    
+            {showForm ? (
+                <PromotionForm
+                    formType={formType}
+                    promotion={selectedPromotion}
+                    onClose={() => setShowForm(false)}
+                    onRefresh={setPromotions}
+                />
+            ) : (
+                <div className="table-responsive">
+                    <table className="table table-striped table-bordered">
+                        <thead className="table-dark">
+                            <tr>
+                                <th scope="col">Tên khuyến mãi</th>
+                                <th scope="col">Giảm giá (%)</th>
+                                <th scope="col">Ngày bắt đầu</th>
+                                <th scope="col">Ngày kết thúc</th>
+                                <th scope="col" className="text-center">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredPromotions.length > 0 ? (
+                                filteredPromotions.map((promotion) => (
+                                    <tr key={promotion.id}>
+                                        <td>{promotion.name}</td>
+                                        <td>{promotion.percentDiscount}%</td>
+                                        <td>
+                                            {promotion.startDay ?
+                                                new Intl.DateTimeFormat('vi-VN', {
                                                     year: 'numeric',
                                                     month: '2-digit',
                                                     day: '2-digit',
-                                                }).format(new Date(promotion.startDay))} ${new Intl.DateTimeFormat('vi-VN', {
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                    
-                                                    hour12: false,
-                                                }).format(new Date(promotion.startDay))}` : "Ngày không hợp lệ"}
-
-                                            </td>
-                                            <td>
-                                                {promotion.endDay ? `${new Intl.DateTimeFormat('vi-VN', {
+                                                }).format(new Date(promotion.startDay)) :
+                                                "Ngày không hợp lệ"
+                                            }
+                                        </td>
+                                        <td>
+                                            {promotion.endDay ?
+                                                new Intl.DateTimeFormat('vi-VN', {
                                                     year: 'numeric',
                                                     month: '2-digit',
                                                     day: '2-digit',
-                                                }).format(new Date(promotion.endDay))} ${new Intl.DateTimeFormat('vi-VN', {
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
-                                                    
-                                                    hour12: false,
-                                                }).format(new Date(promotion.endDay))}` : "Ngày không hợp lệ"}
-
-                                            </td>
-                                            <td className="text-center">
-                                                <button
-                                                    onClick={() => handleEditPromotion(promotion)}
-                                                    className="btn btn-sm btn-warning me-2"
-                                                >
-                                                    <i className="bi bi-pencil"></i> Sửa
-                                                </button>
-                                                <button
-                                                    onClick={() => deletePromotionHandler(promotion.id)}
-                                                    className="btn btn-sm btn-danger"
-                                                >
-                                                    <i className="bi bi-trash"></i> Xoá
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="5" className="text-center">
-                                            Không tìm thấy khuyến mãi.
+                                                }).format(new Date(promotion.endDay)) :
+                                                "Ngày không hợp lệ"
+                                            }
+                                        </td>
+                                        <td className="text-center">
+                                            <button
+                                                onClick={() => handleEditPromotion(promotion)}
+                                                className="btn btn-sm btn-warning me-2"
+                                            >
+                                                <i className="bi bi-pencil"></i> Sửa
+                                            </button>
+                                            <button
+                                                onClick={() => deletePromotionHandler(promotion.id)}
+                                                className="btn btn-sm btn-danger"
+                                            >
+                                                <i className="bi bi-trash"></i> Xoá
+                                            </button>
                                         </td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="text-center">
+                                        Không tìm thấy khuyến mãi.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
+    
 }
 
 function PromotionForm({ formType, promotion, onClose, onRefresh }) {
@@ -207,31 +197,31 @@ function PromotionForm({ formType, promotion, onClose, onRefresh }) {
     // Hàm xử lý submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Kiểm tra các trường trống hoặc không hợp lệ
         if (!formData.name) {
             Swal.fire("Lỗi", "Tên khuyến mãi không được trống!", "error");
             return;
         }
-    
-        if (!formData.percentDiscount || isNaN(formData.percentDiscount) || formData.percentDiscount < 0 || formData.percentDiscount==50) {
+
+        if (!formData.percentDiscount || isNaN(formData.percentDiscount) || formData.percentDiscount < 0 || formData.percentDiscount == 50) {
             Swal.fire("Lỗi", "Phần trăm giảm giá phải là một số hợp lệ và lớn hơn 0 và bé hơn 50!", "error");
             return;
         }
-    
+
         if (!formData.startDay) {
             Swal.fire("Lỗi", "Ngày bắt đầu không được trống!", "error");
             return;
         }
-    
+
         if (!formData.endDay) {
             Swal.fire("Lỗi", "Ngày kết thúc không được trống!", "error");
             return;
         }
-    
+
         const startInstant = getInstant(formData.startDay);
         const endInstant = getInstant(formData.endDay);
-    
+
         // Kiểm tra ngày bắt đầu phải là hôm nay hoặc muộn hơn
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Đặt lại giờ, phút, giây để so sánh chỉ ngày
@@ -239,19 +229,19 @@ function PromotionForm({ formType, promotion, onClose, onRefresh }) {
             Swal.fire("Lỗi", "Ngày bắt đầu phải là hôm nay hoặc muộn hơn!", "error");
             return;
         }
-    
+
         // Kiểm tra ngày kết thúc phải sau ngày bắt đầu
         if (new Date(startInstant) >= new Date(endInstant)) {
             Swal.fire("Lỗi", "Ngày kết thúc phải sau ngày bắt đầu!", "error");
             return;
         }
-    
+
         const promotionData = {
             ...formData,
             startDay: startInstant,
             endDay: endInstant,
         };
-    
+
         try {
             let promotionResponse;
             if (formType === "add") {
@@ -267,15 +257,15 @@ function PromotionForm({ formType, promotion, onClose, onRefresh }) {
                     prev.map((promo) => (promo.id === promotion.id ? promotionResponse : promo))
                 );
             }
-    
+
             onClose(); // Đóng form
         } catch (error) {
             console.error("Lỗi:", error);
             Swal.fire("Lỗi", "Có lỗi xảy ra khi lưu khuyến mãi.", "error");
         }
     };
-    
-    
+
+
 
     return (
         <div className="modal d-block" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>

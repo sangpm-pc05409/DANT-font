@@ -124,7 +124,7 @@ const ProfilePage = () => {
       });
       return;
     }
-  
+
     // Kiểm tra xem trường nào bị bỏ trống
     const fields = [
       { key: 'fullname', message: 'Tên đầy đủ không được bỏ trống.' },
@@ -141,7 +141,7 @@ const ProfilePage = () => {
         return;
       }
     }
-    
+
     // Kiểm tra độ dài của fullname
     if (updatedData.fullname.length < 5 || updatedData.fullname.length > 20) {
       Swal.fire({
@@ -151,11 +151,11 @@ const ProfilePage = () => {
       });
       return;
     }
-  
+
     // Hàm kiểm tra email và số điện thoại hợp lệ
     const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const isValidPhone = (phone) => /^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})$/.test(phone);
-  
+
     if (!isValidEmail(updatedData.email)) {
       Swal.fire({
         icon: 'warning',
@@ -163,7 +163,7 @@ const ProfilePage = () => {
       });
       return;
     }
-  
+
     if (!isValidPhone(updatedData.phone)) {
       Swal.fire({
         icon: 'warning',
@@ -171,7 +171,7 @@ const ProfilePage = () => {
       });
       return;
     }
-  
+
     try {
       const response = await axios.put(
         `http://localhost:8080/api/home/account/updateInfor/${username}`,
@@ -189,7 +189,7 @@ const ProfilePage = () => {
           },
         }
       );
-  
+
       if (response.status === 200 && response.data) {
         setProfileData(response.data);
         setIsEditing(false);
@@ -214,7 +214,7 @@ const ProfilePage = () => {
       });
     }
   };
-  
+
 
 
 
@@ -251,6 +251,22 @@ const ProfilePage = () => {
     navigate(`/user/product/${id}`);
   };
 
+  //phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Số sản phẩm trên mỗi trang
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
+  const paginateProducts = (products) => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return products.slice(startIndex, endIndex);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
 
   if (isLoading) {
@@ -460,9 +476,9 @@ const ProfilePage = () => {
           {loading ? (
             <p>Đang tải...</p>
           ) : (
-            <div className="product-grid">
-              {products.length > 0 ? (
-                products.map((prod) => (
+            <div>
+              <div className="product-grid">
+                {paginateProducts(products).map((prod) => (
                   <div
                     key={prod.id}
                     className="product-card"
@@ -478,13 +494,39 @@ const ProfilePage = () => {
                       <p className="product-price">{prod.price.toLocaleString()} VND</p>
                     </div>
                   </div>
-                ))
-              ) : (
-                <p>Không có sản phẩm nào.</p>
-              )}
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              {/* Pagination Controls */}
+              <div className="pagination-controls">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(index + 1)}
+                    className={currentPage === index + 1 ? "active" : ""}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+
             </div>
           )}
         </Tab>
+
 
       </Tabs>
     </div>

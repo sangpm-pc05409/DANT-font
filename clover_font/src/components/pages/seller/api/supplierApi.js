@@ -69,15 +69,14 @@ export const deleteSupplier = async (id) => {
     }
 };
 
-// Lấy danh sách nhà cung cấp theo shopId
-export const getSuppliersByShop = async (shopId) => {
+// Lấy danh sách nhà cung cấp theo productId
+export const getSuppliersByProduct = async (productId) => {
     try {
-        // Gọi API lấy nhà cung cấp theo shopId
-        const response = await axiosInstance.get(`/shop/${shopId}`);
+        // Gọi API lấy nhà cung cấp theo productId
+        const response = await axiosInstance.get(`/suppliers/${productId}`);
         return response.data; // Trả về danh sách nhà cung cấp
     } catch (error) {
-        console.error('Error fetching suppliers by shopId:', error);
+        console.error('Error fetching suppliers by productId:', error);
         throw error; // Ném lỗi nếu có
     }
 };
-

@@ -16,6 +16,8 @@ import ProductDetail from './components/pages/client/ProductDetail/productDetail
 import OrderSummary from './components/pages/client/OrderSummary/OrderSummary';
 import Order from './components/pages/client/OderCilent/oder_client';
 import UserProfile from './components/pages/client/UserProfile/UserProfile';
+import ResultPayment from './components/pages/client/OderCilent/ResultPayment';
+
 
 
 // Trang account
@@ -61,6 +63,9 @@ function UserLayout() {
           <Route path="order" element={<Order />} />
           <Route path="orderSummary" element={<OrderSummary />} />
           <Route path="chat" element={<ChatApp />} />
+          <Route path="resultpayment" element={<ResultPayment />} />
+          {/* <Route exact path="chat" component={ChatScreen} /> */}
+          
           {/* <Route exact path="/chat" component={ChatScreen} />
           <Route path="/" component={WelcomeScreen} /> */}
 

@@ -2,17 +2,17 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api';
 const API_ORDER_URL = '/order';
-const API_CART_ORDER_URL = '/order/getOrder';
+const API_CART_ORDER_URL = '/user/bill/getProductCartToPay';
 
-const API_ADD_CART_TO_ORDER_URL = '/order/create-bills-client';
-
+const API_ADD_CART_TO_ORDER_URL = '/user/bill/create';
+const API_UPDATE_BILL_GHN = '/user/bill';
 const API_BILL_URL = '/billclient/showBillCli';
 
 const API_SHOW_DETAILBILL_URL = '/billclient/showDetailBill';
 
 const API_CANCEL_BILL_URL = '/billclient/cancel_bill';
 
-const API_PAYMENT_URL = '/order/payment';
+const API_PAYMENT_URL = '/payment/vn-pay';
 const API_SET_ORDER_PAID_URL = '/order/updateBillAsPaid';
 export const getAllOders = async () => {
     const response = await axios.get(API_URL);
@@ -46,8 +46,8 @@ export const getOrderFromCart = async (ids) => {
     return response.data;
 };
 //PAYMENT
-export const payment = async (amount) => {
-     const response = await axiosInstance.get(`${API_PAYMENT_URL}/${amount}`).catch(function (error) {
+export const payment = async (amount, billID) => {
+     const response = await axiosInstance.get(`${API_PAYMENT_URL}?amount=${amount}&orderId=${billID}`).catch(function (error) {
         window.location = "/error";
       });;
     return response.data;
@@ -60,12 +60,15 @@ export const setBillAsPaid = async (id) => {
    return response.data;
 }
 // ADD CART TO BILL
-export const addCartToBill = async (acc_id, carts, point) => {
-    const response = await axiosInstance.post(`${API_ADD_CART_TO_ORDER_URL}/${acc_id}/${point}`, carts).catch(function (error) {
+export const addCartToBill = async (carts) => {
+    const response = await axiosInstance.post(`${API_ADD_CART_TO_ORDER_URL}`, carts).catch(function (error) {
+        console.log(error);
         window.location = "/error";
-      });;
-    return response.data;
+    });
+    console.log("Response from addCartToBill:", response.data); // In ra để kiểm tra
+    return response.data; // Đảm bảo trả về dữ liệu từ response
 };
+
 //SHOW BILL
 export const showBill = async (username) => {
     const response = await axiosInstance.get(`${API_BILL_URL}/${username}`).catch(function (error) {
@@ -73,7 +76,18 @@ export const showBill = async (username) => {
       });;
     return response.data;
 };
+//update bill order Id 
 
+export const updateBillOrderId = async (formdata) => {
+    for (let [key, value] of formdata.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+    
+    const response = await axiosInstance.put(`${API_UPDATE_BILL_GHN}/setOrderGhn`, formdata).catch(function (error) {
+        window.location = "/";
+      });
+    return response.data;
+};
 //SHOW DETAIL BILL
 export const showDetailBill = async ( id) => {
     const response = await axiosInstance.get(`${API_SHOW_DETAILBILL_URL}/${id}`).catch(function (error) {
