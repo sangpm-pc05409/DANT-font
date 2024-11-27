@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 
 export default function Header({ onLogout, isLoggedIn }) {
+
+    
   return (
     <div className="bg-light" style={{ position: 'fixed', height: '100%', width: '250px', overflowY: 'auto', boxShadow: '2px 0 5px rgba(0,0,0,0.1)' }}>
         <div className="d-flex align-items-center justify-content-center py-4">

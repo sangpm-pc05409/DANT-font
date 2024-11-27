@@ -136,31 +136,33 @@ const PostList = () => {
 
     return (
         <div>
-            <h2>Bài Đăng</h2>
-            <div className="nav nav-tabs mt-4">
-                <button className={`nav-link ${activeTab === 'all' ? 'active' : ''}`} onClick={() => {
-                    setActiveTab('all');
-                    setCurrentPage(1); // Reset trang về 1 khi chuyển tab
-                }}>
-                    Tất cả
-                </button>
-                <button className={`nav-link ${activeTab === 'browse' ? 'active' : ''}`} onClick={() => {
-                    setActiveTab('browse');
-                    setCurrentPage(1); // Reset trang về 1 khi chuyển tab
-                }}>
-                    Bài Đăng Chờ Duyệt
-                </button>
-                <button className={`nav-link ${activeTab === 'denounce' ? 'active' : ''}`} onClick={() => {
-                    setActiveTab('denounce');
-                    setCurrentPage(1); // Reset trang về 1 khi chuyển tab
-                }}>
-                    Bài Đăng Bị Tố Cáo
-                </button>
-
+            
+            <div className="post-container">
+            <h2 className="text-center mb-4">Bài Đăng</h2>
+                <div className="post-tabs">
+                    <button className={`post-tab ${activeTab === 'all' ? 'active' : ''}`} onClick={() => {
+                        setActiveTab('all');
+                        setCurrentPage(1); // Reset trang về 1 khi chuyển tab
+                    }}>
+                        Tất cả
+                    </button>
+                    <button className={`post-tab ${activeTab === 'browse' ? 'active' : ''}`} onClick={() => {
+                        setActiveTab('browse');
+                        setCurrentPage(1); // Reset trang về 1 khi chuyển tab
+                    }}>
+                        Bài Đăng Chờ Duyệt
+                    </button>
+                    <button className={`post-tab ${activeTab === 'denounce' ? 'active' : ''}`} onClick={() => {
+                        setActiveTab('denounce');
+                        setCurrentPage(1); // Reset trang về 1 khi chuyển tab
+                    }}>
+                        Bài Đăng Bị Tố Cáo
+                    </button>
+                </div>
             </div>
 
-            <table className="table table-striped table-hover mt-3">
-                <thead className="table-dark">
+            <table className="post-table">
+                <thead className="table-primary">
                     <tr>
                         <th>Tên bài viết</th>
                         <th>Ngày đăng</th>
@@ -201,7 +203,7 @@ const PostList = () => {
             </table>
 
             {/* Phân trang */}
-            <div className="d-flex justify-content-between mt-4">
+            <div className="post-pagination">
                 <button
                     className="btn btn-secondary"
                     onClick={prevPage}
@@ -220,7 +222,7 @@ const PostList = () => {
             </div>
             {/* Modal chi tiết bài đăng */}
             {selectedPost && (
-                <Modal show={showModal} onHide={closeModal}>
+                <Modal className="post-modal" show={showModal} onHide={closeModal}>
                     <Modal.Header closeButton>
                         <Modal.Title>Chi tiết bài đăng</Modal.Title>
                     </Modal.Header>

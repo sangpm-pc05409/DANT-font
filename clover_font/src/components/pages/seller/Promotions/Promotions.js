@@ -93,7 +93,7 @@ export default function Promotions() {
                     </button>
                 </div>
             </div>
-    
+
             {showForm ? (
                 <PromotionForm
                     formType={formType}
@@ -168,7 +168,7 @@ export default function Promotions() {
             )}
         </div>
     );
-    
+
 }
 
 function PromotionForm({ formType, promotion, onClose, onRefresh }) {
@@ -204,10 +204,13 @@ function PromotionForm({ formType, promotion, onClose, onRefresh }) {
             return;
         }
 
-        if (!formData.percentDiscount || isNaN(formData.percentDiscount) || formData.percentDiscount < 0 || formData.percentDiscount == 50) {
-            Swal.fire("Lỗi", "Phần trăm giảm giá phải là một số hợp lệ và lớn hơn 0 và bé hơn 50!", "error");
+        const percentDiscount = parseFloat(formData.percentDiscount);
+
+        if (isNaN(percentDiscount) || percentDiscount <= 0 || percentDiscount >= 50) {
+            Swal.fire("Lỗi", "Phần trăm giảm giá phải là một số hợp lệ, lớn hơn 0 và nhỏ hơn 50!", "error");
             return;
         }
+
 
         if (!formData.startDay) {
             Swal.fire("Lỗi", "Ngày bắt đầu không được trống!", "error");
@@ -297,6 +300,8 @@ function PromotionForm({ formType, promotion, onClose, onRefresh }) {
                                     value={formData.percentDiscount}
                                     onChange={handleChange}
                                     required
+                                    min={1}
+                                    max={50}
                                 />
                             </div>
                             <div className="form-group">

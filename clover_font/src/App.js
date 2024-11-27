@@ -1,7 +1,7 @@
 import './App.css';
 import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import React, { useState } from 'react';
 // Layout và Navbar
 import FacebookNavbar from './components/navbar/client/navbar';
 import NavAdmin from './components/navbar/admin/Navbar';
@@ -78,11 +78,13 @@ function UserLayout() {
 
 // Layout component cho admin
 function AdminLayout() {
+  const [isCollapsed, setIsCollapsed] = useState(false); // State để điều khiển navbar thu gọn
+
   return (
-    <div >
-      <NavAdmin />
-      <div className="content">
-        <div style={{ padding: '20px', marginLeft: '250px', width: 'calc(100% - 250px)' }}>
+    <div className="admin-layout">
+      <NavAdmin isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} /> {/* Truyền trạng thái navbar vào */}
+      <div className={`content-container ${isCollapsed ? 'collapsed' : ''}`}>
+        <div style={{ padding: '20px', marginLeft: isCollapsed ? '50px' : '80px', width: isCollapsed ? 'calc(100% - 50px)' : 'calc(100% - 80px)' }}>
           <Routes>
             <Route path="account-management" element={<AccountManagement />} />
             <Route path="supplier-management" element={<SupplierList />} />
@@ -90,7 +92,7 @@ function AdminLayout() {
             <Route path="stactial-management" element={<StaticalAd />} />
             <Route path="property-management" element={<PropertyManager />} />
             <Route path="properties-values-management" element={<PropertyValueManager />} />
-            <Route path="*" element={<Navigate to="/admin/account-management" />} />
+            <Route path="*" element={<Navigate to="/admin/stactial-management" />} />
           </Routes>
         </div>
       </div>
